@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    networks:
+      - novel-go-net
+
+  content-service:
+    build: ./content-service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./content-service:/app
+    networks:
+      - novel-go-net
+
+  interaction-service:
+    build: ./interaction-service
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./interaction-service:/app
+    networks:
+      - novel-go-net
+
+  collection-service:
+    build: ./collection-service
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./collection-service:/app
+      - /app/node_modules
+    networks:
+      - novel-go-net
+
+networks:
+  novel-go-net:
+    driver: bridge
