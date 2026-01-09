@@ -1,47 +1,74 @@
 # NOVEL-GO Platform
 
-A social novel reading platform with microservices architecture.
+Welcome to **NOVEL-GO**, a social novel reading platform built with a microservices architecture.
 
-## Architecture
+## 🏗 System Architecture
 
-| Service | Technology | Port | Responsibility |
+The system mimics a scalable production environment with 4 backend services and a mobile frontend.
+
+| Service | Technology | Port (Host) | Responsibility |
 | :--- | :--- | :--- | :--- |
-| **Auth Service** | Node.js (Express) | 3001 | User Management (Register, Login) |
-| **Content Service** | PHP (Lumen) | 8000 | Novel & Chapter Data |
-| **Interaction Service** | Python (Flask) | 5000 | Comments & Reviews |
-| **Collection Service** | Node.js (Express) | 3002 | Bookmarks & Library |
-| **Mobile App** | Flutter | - | Android/iOS Frontend |
+| **Auth Service** | Node.js (Express) | `3001` | User Management (Register, Login) |
+| **Content Service** | PHP (Lumen) | `8000` | Novel & Chapter Data |
+| **Interaction Service** | Python (Flask) | `5000` | Comments & Reviews |
+| **Collection Service** | Node.js (Express) | `3002` | User Library (Bookmarks) |
+| **Mobile App** | Flutter | - | User Interface |
 
-## specific Setup Instructions
+---
 
-### 1. Auth Service & Collection Service (Node.js)
+## 🚀 How to Run
+
+### Prerequisites
+- **Docker Desktop** (Installed & Running)
+- **Flutter SDK**
+
+### Step 1: Start Backend Services (Docker)
+We use Docker Compose to run all 4 backend services simultaneously.
+
+1. Open a terminal in the project root (`Novel-go/`).
+2. Run the command:
+   ```bash
+   docker-compose up --build
+   ```
+3.  Wait until you see logs indicating all services are running.
+    *   *Note: If `interaction-service` fails immediately, ensure port 5000 is free.*
+
+### Step 2: Run Mobile App (Flutter)
+1. Open a **new** terminal window.
+2. Navigate to the Flutter directory:
+   ```bash
+   cd flutter/novel_flutter
+   ```
+3. Run the app (ensure you have an Android Emulator or device connected):
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 🧪 Testing
+
+### Automated Health Check
+We have a python script to automatically verify that all 4 microservices are healthy and communicating.
 ```bash
-cd auth-service
-npm install
-npm start
+python tests/test_all_services.py
 ```
-```bash
-cd collection-service
-npm install
-npm start
-```
 
-### 2. Interaction Service (Python)
-```bash
-cd interaction-service
-pip install -r requirements.txt
-python app.py
-```
+### Manual Testing (Postman)
+Refer to **[POSTMAN_GUIDE.md](POSTMAN_GUIDE.md)** for a list of endpoints to test manually (Register, Login, Add Comment, etc.).
 
-### 3. Content Service (PHP)
-```bash
-cd content-service
-composer install
-php -S localhost:8000 -t public
-```
+---
 
-### 4. Mobile App (Flutter)
-```bash
-cd mobile_app
-flutter run
+## 📂 Project Structure
+```
+Novel-go/
+├── auth-service/           # Node.js Auth Service
+├── collection-service/     # Node.js Collection Service
+├── content-service/        # PHP Content Service
+├── interaction-service/    # Python Interaction Service
+├── flutter/
+│   └── novel_flutter/      # Flutter Mobile App
+├── tests/                  # Automated Test Scripts
+├── docker-compose.yml      # Docker Orchestration
+└── README.md               # This file
 ```
