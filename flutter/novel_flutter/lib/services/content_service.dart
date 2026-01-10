@@ -4,7 +4,7 @@ import '../config.dart';
 
 class ContentService {
   Future<List<dynamic>> getNovels() async {
-    final response = await http.get(Uri.parse('${Config.baseUrlContent}/novels'));
+    final response = await http.get(Uri.parse('${Config.baseUrlNovel}/novels'));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -14,7 +14,7 @@ class ContentService {
   }
 
   Future<Map<String, dynamic>> getNovelDetails(int id) async {
-    final response = await http.get(Uri.parse('${Config.baseUrlContent}/novels/$id'));
+    final response = await http.get(Uri.parse('${Config.baseUrlNovel}/novels/$id'));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
