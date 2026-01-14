@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'novels_management_screen.dart';
 import 'users_management_screen.dart';
-import 'comments_management_screen.dart';
 import '../login_screen.dart';
+import '../user/account_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   @override
@@ -97,26 +97,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     },
                   ),
                   _buildDashboardCard(
-                    icon: Icons.comment,
-                    title: 'Manage Comments',
-                    subtitle: 'Moderate',
-                    color: Colors.orange,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CommentsManagementScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildDashboardCard(
                     icon: Icons.person,
                     title: 'My Account',
                     subtitle: 'Profile',
                     color: Colors.purple,
                     onTap: () {
-                      // Navigate to account screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AccountScreen(),
+                        ),
+                      );
                     },
                   ),
                 ],

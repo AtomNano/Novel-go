@@ -26,6 +26,8 @@ class _NovelDetailScreenState extends State<NovelDetailScreen> {
   bool _isFavorited = false;
   bool _isCheckingFavorite = true;
   int? _userId;
+  String? _userRole;
+  bool get _isAdmin => _userRole == 'admin';
 
   @override
   void initState() {
@@ -37,8 +39,11 @@ class _NovelDetailScreenState extends State<NovelDetailScreen> {
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getInt('userId');
+    final userRole = prefs.getString('userRole');
+    print('[NOVEL DETAIL] Loaded userRole: $userRole, isAdmin: ${userRole == 'admin'}');
     setState(() {
       _userId = userId;
+      _userRole = userRole;
     });
     if (userId != null) {
       _checkIfFavorited(userId);
@@ -134,6 +139,20 @@ class _NovelDetailScreenState extends State<NovelDetailScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
+  Future<void> _deleteComment(int commentId) async {
+    try {
+      await _interactionService.deleteComment(commentId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Comment deleted')),
+      );
+      _loadComments();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete comment')),
       );
     }
   }
@@ -306,7 +325,7 @@ class _NovelDetailScreenState extends State<NovelDetailScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Row(
+                                         Row(
                                           children: [
                                             CircleAvatar(
                                               child: Text(
@@ -335,6 +354,32 @@ class _NovelDetailScreenState extends State<NovelDetailScreen> {
                                                 ],
                                               ),
                                             ),
+                                            if (_isAdmin)
+                                              IconButton(
+                                                icon: Icon(Icons.delete, color: Colors.red, size: 20),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) => AlertDialog(
+                                                      title: Text('Delete Comment'),
+                                                      content: Text('Delete this comment?'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () => Navigator.pop(context),
+                                                          child: Text('Cancel'),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                            _deleteComment(comment.id);
+                                                          },
+                                                          child: Text('Delete', style: TextStyle(color: Colors.red)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
                                           ],
                                         ),
                                         SizedBox(height: 8),

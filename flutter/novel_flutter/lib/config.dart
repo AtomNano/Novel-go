@@ -1,16 +1,29 @@
 class Config {
-  // Use 10.0.2.2 for Android Emulator to access localhost
-  // For Chrome/Web, change to 'http://localhost'
+  // =========================================================
+  // KONFIGURASI IP SERVER
+  // =========================================================
+  // Ganti IP di bawah ini dengan IP Laptop Server (Laptop Teman)
+  // Cara cek IP di Windows: Buka CMD -> ketik 'ipconfig' -> lihat IPv4 Address
+  // Contoh: '192.168.1.5', '192.168.100.12', dll.
+  // 
+  // Jika pakai Emulator Android di laptop yang sama dengan backend: gunakan '10.0.2.2'
+  // Jika pakai HP Fisik / Laptop lain: Wajib ganti ke IP Laptop Server (misal '192.168.x.x')
   
-  // Auth Service (Node.js)
-  static const String baseUrlAuth = 'http://10.0.2.2:3001';
+  static const String serverIp = '10.0.2.2'; // <--- GANTI INI SESUAI KEBUTUHAN
+
+  // =========================================================
+  // BASE URL SERVICES
+  // =========================================================
   
-  // Content Service (PHP) - Novels & Chapters
-  static const String baseUrlNovel = 'http://10.0.2.2:8000';
+  // Auth Service (Node.js) - Port 3001
+  static const String baseUrlAuth = 'http://$serverIp:3001';
   
-  // Interaction Service (Python/Flask) - Comments
-  static const String baseUrlInteraction = 'http://10.0.2.2:5000';
+  // Content Service (PHP) - Port 8000
+  static const String baseUrlNovel = 'http://$serverIp:8000';
   
-  // Collection Service (Node.js) - User Favorites
-  static const String baseUrlCollection = 'http://10.0.2.2:3002';
+  // Interaction Service (Python/Flask) - Port 5000
+  static const String baseUrlInteraction = 'http://$serverIp:5000';
+  
+  // Collection Service (Node.js) - Port 3002
+  static const String baseUrlCollection = 'http://$serverIp:3002';
 }

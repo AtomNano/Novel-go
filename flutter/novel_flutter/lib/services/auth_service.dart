@@ -22,12 +22,17 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', data['token']);
-        await prefs.setInt('userId', data['user']['id']);
-        return data;
-      } else {
-        throw Exception('Login failed: ${response.body}');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('userId', data['user']['id']);
+      await prefs.setString('userName', data['user']['name']);
+      await prefs.setString('userEmail', data['user']['email']);
+      await prefs.setString('userRole', data['user']['role']); // Save user role
+      await prefs.setString('token', data['token']);
+      
+      print('[AUTH] Login successful, userId: ${data['user']['id']}, role: ${data['user']['role']}');
+      
+      return data; // Return full data for role-based routing
+    } else {  throw Exception('Login failed: ${response.body}');
       }
     } on SocketException catch (e) {
       print('[AUTH ERROR] Network error: $e');
