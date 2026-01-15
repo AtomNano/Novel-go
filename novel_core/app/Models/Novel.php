@@ -10,7 +10,14 @@ class Novel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'description', 'admin_id'
+        'title',
+        'author',
+        'publisher',
+        'cover',
+        'description',
+        'published_date',
+        'admin_id',
+        'content'
     ];
 
     public function author()

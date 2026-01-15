@@ -28,9 +28,17 @@ def home():
 @app.route("/comments", methods=["GET"])
 def get_comments():
     chapter_id = request.args.get("chapter_id", type=int)
+    novel_id = request.args.get("novel_id", type=int)
+    
+    filtered_comments = comments
+    
     if chapter_id:
-        return jsonify([c for c in comments if c["chapter_id"] == chapter_id])
-    return jsonify(comments)
+        filtered_comments = [c for c in filtered_comments if c["chapter_id"] == chapter_id]
+    
+    if novel_id:
+        filtered_comments = [c for c in filtered_comments if c["novel_id"] == novel_id]
+        
+    return jsonify(filtered_comments)
 
 # =====================
 # READ - Get Single Comment
@@ -55,10 +63,10 @@ def add_comment():
     
     new_comment = {
         "id": len(comments) + 1,
-        "user_id": int(data["user_id"]),
-        "novel_id": int(data["novel_id"]),
-        "chapter_id": int(data["chapter_id"]),
-        "content": data["content"]
+        "user_id": int(data.get("user_id")),
+        "novel_id": int(data.get("novel_id")),
+        "chapter_id": int(data.get("chapter_id", 0)), # Default to 0 if not provided
+        "content": data.get("content")
     }
     comments.append(new_comment)
     return jsonify(new_comment), 201

@@ -1,0 +1,3 @@
+@echo off
+echo Starting Laravel on 0.0.0.0:8000 (Accessible from other devices)...
+php -S 0.0.0.0:8000 -t public

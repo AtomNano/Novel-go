@@ -1,79 +1,94 @@
 
-# Panduan Sharing Service & Koneksi IP
+# Panduan Setup Tim Terdistribusi (3 Laptop)
 
-Panduan ini menjelaskan cara membagikan backend services (Docker) ke laptop teman dan menghubungkan aplikasi Flutter dari laptop teman ke backend tersebut.
-
-## Skenario
-- **Laptop A (Host)**: Menjalankan Backend (Docker)
-- **Laptop B (Client)**: Menjalankan Aplikasi Flutter (Android/iOS)
+Panduan ini untuk setup tim dengan pembagian tugas:
+1.  **Laptop A (Anda)**: Menjalankan **Node.js Services** (Auth & Collection).
+2.  **Laptop B (Teman 1)**: Menjalankan **Laravel Service** (Content).
+3.  **Laptop C (Teman 2)**: Menjalankan **Aplikasi Flutter** dan **Python Service** (Interaction).
 
 ---
 
-## 1. Laptop A (Host) - Menjalankan Backend
+## Prasyarat Wajib
+1.  **Satu Jaringan**: Ketiga laptop (dan HP jika pakai HP fisik) **WAJIB** terhubung ke WiFi/Tethering yang SAMA.
+2.  **Firewall Off**: Matikan firewall di Laptop A, B, dan C agar bisa saling akses.
 
-### Cari Tahu IP Address Laptop A
-1. Tekan tombol `Windows + R`.
-2. Ketik `cmd` lalu Enter.
-3. Di Command Prompt, ketik:
-   ```cmd
-   ipconfig
-   ```
-4. Cari bagian **Wireless LAN adapter Wi-Fi** (jika pakai WiFi) atau **Ethernet adapter** (jika pakai kabel).
-5. Catat **IPv4 Address**. Contoh: `192.168.1.5` atau `192.168.100.12`.
+---
 
-### Bagikan Project ke Teman
-Cara paling mudah adalah membagikan seluruh folder project (kecuali `node_modules` dan folder build lain) atau clone dari Git.
-1. Pastikan file `docker-compose.yml` ada.
-2. Kirim folder project ini ke teman.
+## Langkah 1: Cek IP Address Masing-Masing
 
-### Jalankan Backend
-Di terminal (di dalam folder project):
+Setiap orang (Laptop A, B, dan C) harus melakukan ini:
+1.  Buka CMD (`Windows + R`, ketik `cmd`).
+2.  Ketik `ipconfig`.
+3.  Catat **IPv4 Address** (misal: `192.168.1.10`, `192.168.1.11`, dll).
+
+**Contoh Hasil Catatan:**
+- IP Laptop A (Node.js): `192.168.1.5`
+- IP Laptop B (Laravel): `192.168.1.6`
+- IP Laptop C (Flutter/Python): `192.168.1.7`
+
+---
+
+## Langkah 2: Jalankan Service Backend
+
+### Di Laptop A (Node.js)
+Jalankan container Auth & Collection:
 ```bash
-docker-compose up --build
+docker-compose up --build auth-service collection-service mysql phpmyadmin
 ```
-Pastikan semua service running (Auth: 3001, Novel: 8000, Interaction: 5000, Collection: 3002).
+Pastikan port running: **3001** (Auth) dan **3002** (Collection).
 
-> **PENTING**: Laptop A dan Laptop B harus berada di jaringan WiFi/LAN yang SAMA.
-
----
-
-## 2. Laptop B (Client) - Menjalankan Flutter
-
-### Edit Konfigurasi IP
-1. Buka file `lib/config.dart`.
-2. Cari variabel `serverIp`.
-3. Ganti nilainya dengan **IP Laptop A** yang sudah dicatat tadi.
-   
-```dart
-class Config {
-  // GANTI IP INI dengan IP Laptop A (Host Backend)
-  static const String serverIp = '192.168.1.5'; // <-- Contoh
-  
-  // ... sisanya tidak perlu diubah
-}
-```
-
-### Jalankan Aplikasi Flutter
-1. Jalankan aplikasi di HP fisik atau Emulator.
+### Di Laptop B (Laravel)
+Jalankan container Core (Lumen):
 ```bash
-flutter run
+docker-compose up --build novel_core
 ```
+Pastikan port running: **8080** (Content / Core).
+*(Catatan: Container Laravel di Laptop B harus konek ke Database di Laptop A. Pastikan di `docker-compose.yml` Laptop B, `DB_HOST` mengarah ke IP Laptop A, atau jika ribet, jalankan MySQL sendiri di Laptop B tetapi datanya jadi terpisah)*.
+**OPSI LEBIH MUDAH UNTUK DATABASE:**
+Agar tidak pusing connect database antar laptop, sebaiknya **tiap laptop backend menjalankan MySQL-nya sendiri** (dummy data masing-masing), atau putuskan Laptop A sebagai "Database Pusat" dan Laptop B ubah `.env` / `docker-compose.yml` nya bagian `DB_HOST` ke IP Laptop A.
 
-### Troubleshooting
-Jika aplikasi tidak bisa connect:
-1. **Firewall**: Coba matikan sementara Firewall di Laptop A.
-   - Search "Firewall & network protection" -> Public network -> Off.
-2. **Ping**: Coba ping IP Laptop A dari Laptop B.
-   - Buka CMD di Laptop B -> ketik `ping 192.168.1.5` (ganti IP).
-   - Jika "Request timed out", berarti koneksi jaringan bermasalah.
-3. **Port**: Pastikan port 3001, 8000, 5000, 3002 tidak diblock.
+### Di Laptop C (Python & Flutter)
+1.  Jalankan container Social (Python):
+    ```bash
+    docker-compose up --build social_service
+    ```
+    Pastikan port running: **5003**.
+    
+2.  **Konfigurasi Flutter**:
+    Buka `lib/config.dart` dan isi IP sesuai catatan tadi.
+
+    ```dart
+    class Config {
+      // Masukkan IP Laptop A
+      static const String authCollectionIp = '192.168.1.5'; 
+
+      // Masukkan IP Laptop B
+      static const String contentIp = '192.168.1.6';
+
+      // Karena Python jalan di laptop ini sendiri (Laptop C)
+      // Jika pakai Emulator Android: gunakan '10.0.2.2'
+      // Jika pakai HP Fisiki: gunakan IP Laptop C ('192.168.1.7')
+      static const String interactionIp = '10.0.2.2'; 
+    }
+    ```
+
+3.  **Jalankan Flutter**:
+    ```bash
+    flutter run
+    ```
 
 ---
 
-## Ringkasan Port Service
-- **Auth Service**: 3001
-- **Content Service**: 8000
-- **Interaction Service**: 5000
-- **Collection Service**: 3002
-- **Database (MySQL)**: 3306
-- **PHPMyAdmin**: 8081
+## Troubleshooting Koneksi
+Jika Flutter gagal connect ke salah satu service:
+1.  **Ping Test**: Dari Laptop C, coba ping IP Laptop A dan B.
+    - `ping 192.168.1.5`
+    - Jika RTO (Request Timed Out) -> Cek koneksi WiFi atau matikan Firewall.
+2.  **Cek Browser**: Dari Laptop C, buka browser dan akses URL service teman.
+    - Buka `http://192.168.1.5:3001` (Cek Auth Service Laptop A)
+    - Jika muncul response (walau error), berarti koneksi masuk.
+3.  **Cek Port**:
+    - Auth: **3001**
+    - Content (Legacy/New): **8080**
+    - Interaction (New): **5003**
+    - Collection: **3002**

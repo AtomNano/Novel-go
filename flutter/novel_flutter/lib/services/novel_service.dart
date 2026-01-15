@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import '../config.dart';
 import '../models/novel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NovelService {
   // Get all novels
@@ -83,9 +84,15 @@ class NovelService {
     String? publishedDate,
   }) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
       final response = await http.post(
         Uri.parse('${Config.baseUrlNovel}/novels'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
         body: jsonEncode({
           'title': title,
           'author': author,
@@ -99,7 +106,7 @@ class NovelService {
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        return Novel.fromJson(data['novel']);
+        return Novel.fromJson(data);
       } else {
         throw Exception('Failed to create novel');
       }
@@ -111,15 +118,21 @@ class NovelService {
   // Admin: Update novel
   Future<Novel> updateNovel(int id, Map<String, dynamic> updates) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
       final response = await http.put(
         Uri.parse('${Config.baseUrlNovel}/novels/$id'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
         body: jsonEncode(updates),
       ).timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return Novel.fromJson(data['novel']);
+        return Novel.fromJson(data);
       } else {
         throw Exception('Failed to update novel');
       }
@@ -131,8 +144,14 @@ class NovelService {
   // Admin: Delete novel
   Future<void> deleteNovel(int id) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
       final response = await http.delete(
         Uri.parse('${Config.baseUrlNovel}/novels/$id'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
       ).timeout(Duration(seconds: 10));
 
       if (response.statusCode != 200) {

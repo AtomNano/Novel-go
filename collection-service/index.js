@@ -56,7 +56,7 @@ app.get('/favorites/:userId', async (req, res) => {
 
         const [favorites] = await pool.query(`
             SELECT f.id, f.novel_id, f.created_at,
-                   n.title, n.author, n.publisher, n.cover, n.description,
+                   n.title, n.description,
                    COUNT(DISTINCT nv.id) as view_count
             FROM favorites f
             JOIN novels n ON f.novel_id = n.id
@@ -116,7 +116,7 @@ app.post('/favorites', async (req, res) => {
         // Get the created favorite with novel info
         const [favorite] = await pool.query(`
             SELECT f.id, f.novel_id, f.created_at,
-                   n.title, n.author, n.publisher, n.cover, n.description
+                   n.title, n.description
             FROM favorites f
             JOIN novels n ON f.novel_id = n.id
             WHERE f.id = ?

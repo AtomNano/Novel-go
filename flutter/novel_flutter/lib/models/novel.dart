@@ -1,3 +1,5 @@
+import 'chapter.dart';
+
 class Novel {
   final int id;
   final String title;
@@ -9,6 +11,7 @@ class Novel {
   final int viewCount;
   final String? publishedDate;
   final String? createdAt;
+  final List<Chapter>? chapters;
 
   Novel({
     required this.id,
@@ -21,20 +24,24 @@ class Novel {
     this.viewCount = 0,
     this.publishedDate,
     this.createdAt,
+    this.chapters,
   });
 
   factory Novel.fromJson(Map<String, dynamic> json) {
     return Novel(
       id: json['id'],
       title: json['title'],
-      author: json['author'],
-      publisher: json['publisher'],
+      author: json['author'] ?? 'Unknown Author',
+      publisher: json['publisher'] ?? 'Unknown Publisher',
       cover: json['cover'] ?? 'https://via.placeholder.com/300x400',
       content: json['content'],
       description: json['description'],
       viewCount: json['view_count'] ?? 0,
       publishedDate: json['published_date'],
       createdAt: json['created_at'],
+      chapters: json['chapters'] != null
+          ? (json['chapters'] as List).map((i) => Chapter.fromJson(i)).toList()
+          : null,
     );
   }
 

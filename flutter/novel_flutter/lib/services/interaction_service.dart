@@ -10,7 +10,7 @@ class InteractionService {
   Future<List<Comment>> getCommentsByNovel(int novelId) async {
     try {
       final response = await http.get(
-        Uri.parse('${Config.baseUrlInteraction}/comments/novel/$novelId'),
+        Uri.parse('${Config.baseUrlInteraction}/comments?novel_id=$novelId'),
       ).timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {

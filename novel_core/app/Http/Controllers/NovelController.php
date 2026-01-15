@@ -35,7 +35,12 @@ class NovelController extends Controller
 
         $novel = Novel::create([
             'title' => $request->title,
+            'author' => $request->author,
+            'publisher' => $request->publisher,
+            'cover' => $request->cover,
             'description' => $request->description,
+            'content' => $request->content,
+            'published_date' => $request->published_date,
             'admin_id' => Auth::user()->id // Assumes Auth middleware
         ]);
 

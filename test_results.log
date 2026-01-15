@@ -1,19 +1,36 @@
-Starting Automated Tests for NOVEL-GO Microservices...
+STARTING SYSTEM CHECK...
 
---- Testing Auth Service ---
-[PASS] Auth Service Health is running at http://localhost:3001
-[PASS] Registration successful for auto_test_1767973448@example.com
-[PASS] Login successful, token received
+==================================================       
+ TESTING: Auth Service
+==================================================       
 
---- Testing Content Service ---
-[PASS] Content Service Health is running at http://localhost:8000
-[PASS] Retrieved 2 novels
+0. Testing Registration (testuser_unique@example.com)... 
+Status: 201
+Registration SUCCESS!
+1a. Testing Login with New User...
+Status: 200
+Login (New User) SUCCESS!
 
---- Testing Interaction Service ---
-[PASS] Interaction Service Health is running at http://localhost:5000
-[PASS] Posted comment successfully
-[PASS] Verified comment exists in list
+1. Testing Login (admin@novel.com)...
+Status: 200
+Login SUCCESS!
+User: Admin User
 
---- Testing Collection Service ---
-[PASS] Collection Service Health is running at http://localhost:3002
-[PASS] Retrieved library, items: 1
+==================================================       
+ TESTING: Novel Core Service
+==================================================       
+
+1. Fetching All Novels...
+Status: 200
+Found 1 novels.
+Sample: The Beginning After The End
+
+==================================================       
+ TESTING: Social Service
+==================================================       
+
+1. Fetching Comments for Novel ID 1...
+Status: 200
+Found 1 comments.
+
+System Check Complete.

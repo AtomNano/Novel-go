@@ -71,9 +71,9 @@ CREATE TABLE IF NOT EXISTS favorites (
 -- Password for all users: "password123"
 -- You should register users through the API for proper password hashing
 INSERT INTO users (name, email, password, role, address) VALUES 
-('Admin User', 'admin@novel.com', '$2b$10$rZ8L8qY5Z5Z5Z5Z5Z5Z5ZuN7vPGxg5qYxZ5Z5Z5Z5Z5Z5Z5Z5Z5Zu', 'admin', 'Admin Office'),
-('John Doe', 'john@example.com', '$2b$10$rZ8L8qY5Z5Z5Z5Z5Z5Z5ZuN7vPGxg5qYxZ5Z5Z5Z5Z5Z5Z5Z5Z5Zu', 'user', 'Jakarta, Indonesia'),
-('Jane Smith', 'jane@example.com', '$2b$10$rZ8L8qY5Z5Z5Z5Z5Z5Z5ZuN7vPGxg5qYxZ5Z5Z5Z5Z5Z5Z5Z5Z5Zu', 'user', 'Bandung, Indonesia');
+('Admin User', 'admin@novel.com', '$2b$10$CZ1nc6du1bYZSMwL0vFanOEPg0higSbIaaZdE/VSnr594OiC2LwHG', 'admin', 'Admin Office'),
+('John Doe', 'john@example.com', '$2b$10$CZ1nc6du1bYZSMwL0vFanOEPg0higSbIaaZdE/VSnr594OiC2LwHG', 'user', 'Jakarta, Indonesia'),
+('Jane Smith', 'jane@example.com', '$2b$10$CZ1nc6du1bYZSMwL0vFanOEPg0higSbIaaZdE/VSnr594OiC2LwHG', 'user', 'Bandung, Indonesia');
 
 -- Insert sample novels
 INSERT INTO novels (title, author, publisher, content, description, published_date) VALUES 
