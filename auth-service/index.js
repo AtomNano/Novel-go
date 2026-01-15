@@ -117,8 +117,12 @@ app.post('/auth/login', async (req, res) => {
 
         const user = users[0];
 
+        // Compatibility fix: PHP uses $2y$, Node.js bcrypt often expects $2a$ or $2b$
+        // We replace $2y$ with $2b$ to make it compatible
+        const storedHash = user.password.replace(/^\$2y\$/, '$2b$');
+
         // Compare password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, storedHash);
 
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid credentials' });
@@ -173,7 +177,7 @@ app.get('/users/profile/:id', async (req, res) => {
 app.put('/users/profile/:id', async (req, res) => {
     try {
         const userId = parseInt(req.params.id);
-        const { name, email, password, profile_photo, address } = req.body;
+        const { name, email, password, profile_photo, address, role } = req.body;
 
         // Build dynamic update query
         let updateFields = [];
@@ -199,6 +203,10 @@ app.put('/users/profile/:id', async (req, res) => {
         if (address !== undefined) {
             updateFields.push('address = ?');
             updateValues.push(address);
+        }
+        if (role) {
+            updateFields.push('role = ?');
+            updateValues.push(role);
         }
 
         if (updateFields.length === 0) {

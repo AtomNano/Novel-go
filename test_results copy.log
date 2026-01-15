@@ -1,0 +1,36 @@
+STARTING SYSTEM CHECK...
+
+==================================================       
+ TESTING: Auth Service
+==================================================       
+
+0. Testing Registration (testuser_unique@example.com)... 
+Status: 201
+Registration SUCCESS!
+1a. Testing Login with New User...
+Status: 200
+Login (New User) SUCCESS!
+
+1. Testing Login (admin@novel.com)...
+Status: 200
+Login SUCCESS!
+User: Admin User
+
+==================================================       
+ TESTING: Novel Core Service
+==================================================       
+
+1. Fetching All Novels...
+Status: 200
+Found 1 novels.
+Sample: The Beginning After The End
+
+==================================================       
+ TESTING: Social Service
+==================================================       
+
+1. Fetching Comments for Novel ID 1...
+Status: 200
+Found 1 comments.
+
+System Check Complete.
